@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 
 public class PlayerMovementRigidbody : MonoBehaviour
 {
@@ -49,11 +44,7 @@ public class PlayerMovementRigidbody : MonoBehaviour
 
     private Vector3 Convert(Vector2 raw)
     {
-        Vector3 rawV3;
-        if (_isZAxis)
-            rawV3 =  new Vector3(raw.x, 0, raw.y);
-        else
-            rawV3 =  new Vector3(raw.x, raw.y, 0);
+        var rawV3 = _isZAxis ? new Vector3(raw.x, 0, raw.y) : new Vector3(raw.x, raw.y, 0);
 
         if (_target)
             return _target.right * rawV3.x + _target.up * rawV3.y + _target.forward * rawV3.z;
