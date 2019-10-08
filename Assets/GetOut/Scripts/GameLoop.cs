@@ -96,9 +96,11 @@ public class GameLoop : MonoBehaviour {
     }
 
     public void StartStage() {
+        LevelManager.Instance.PrepareLevel();
         currentPhase = GamePhase.Waiting;
     }
     public void CompleteStage() {
+        LevelManager.Instance.WinLevel();
         currentPhase = GamePhase.Leaving;
     }
 
