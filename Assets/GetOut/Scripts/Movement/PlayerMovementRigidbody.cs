@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Unity.Collections;
+using UnityEngine;
 
 public class PlayerMovementRigidbody : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class PlayerMovementRigidbody : MonoBehaviour
     private PlayerInput _input;
     private Rigidbody _rb;
     private Vector3 _force;
+
+    private bool _canControl = true;
     
     private void Awake()
     {
@@ -38,7 +42,7 @@ public class PlayerMovementRigidbody : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _rb.velocity = _speed * Time.deltaTime * _force;
+        if( _canControl) _rb.velocity = _speed * Time.deltaTime * _force;
     }
 
 
@@ -51,5 +55,23 @@ public class PlayerMovementRigidbody : MonoBehaviour
         if (_space == Space.Self)
             return transform.right * rawV3.x + transform.up * rawV3.y + transform.forward * rawV3.z;
         return rawV3;
+    }
+
+    public void Knockback(Vector3 from)
+    {
+        StopAllCoroutines();
+        StartCoroutine(KnockingBack(from));
+
+    }
+
+    private IEnumerator KnockingBack(Vector3 from)
+    {
+        _canControl = false;
+        yield return null;
+        _rb.AddExplosionForce(2000, from,1);
+        yield return  new WaitForSeconds(0.1f);
+        _rb.velocity = Vector3.zero;
+        yield return new WaitForSeconds(0.2f);
+        _canControl = true;
     }
 }
