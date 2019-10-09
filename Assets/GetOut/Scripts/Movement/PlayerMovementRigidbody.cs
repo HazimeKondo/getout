@@ -15,15 +15,31 @@ public class PlayerMovementRigidbody : MonoBehaviour
     private Vector3 _force;
 
     private bool _canControl = true;
-    
+
+    [SerializeField] private float _nockBackForce = 2000;
+    [SerializeField] private float _timeToMoveWithForce = 0.1f;
+    [SerializeField] private float _stunTime = 0.2f;
+
+    [SerializeField] private Animator PlayerAnim;
+    private static readonly int MoveSpeed = Animator.StringToHash("moveSpeed");
+
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _input = new PlayerInput();
         _input.Control.Movement.performed += _ => _force = Convert(_.ReadValue<Vector2>());
         _input.Control.Movement.canceled += _ => _force = Vector3.zero;
+
+        GameLoop.onStageOver += OnGameOver;
     }
 
+
+    private void OnGameOver(bool value)
+    {
+        this.enabled = false;
+        _rb.velocity = Vector3.zero;
+        PlayerAnim.SetFloat(MoveSpeed, 0f);
+    }
     private void OnEnable()
     {
         _input.Enable();
@@ -36,15 +52,19 @@ public class PlayerMovementRigidbody : MonoBehaviour
 
     private void OnDestroy()
     {
+        GameLoop.onStageOver -= OnGameOver;
         _input.Disable();
         _input = null;
     }
 
     private void FixedUpdate()
     {
-        if( _canControl) _rb.velocity = _speed * Time.deltaTime * _force;
+        if (_canControl)
+        {
+            _rb.velocity = _speed * Time.deltaTime * _force;
+            PlayerAnim.SetFloat(MoveSpeed, _rb.velocity.magnitude);
+        }
     }
-
 
     private Vector3 Convert(Vector2 raw)
     {
@@ -68,10 +88,10 @@ public class PlayerMovementRigidbody : MonoBehaviour
     {
         _canControl = false;
         yield return null;
-        _rb.AddExplosionForce(2000, from,1);
-        yield return  new WaitForSeconds(0.1f);
+        _rb.AddExplosionForce(_nockBackForce, from,2);
+        yield return  new WaitForSeconds(_timeToMoveWithForce);
         _rb.velocity = Vector3.zero;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(_stunTime);
         _canControl = true;
     }
 }

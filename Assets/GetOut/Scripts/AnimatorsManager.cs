@@ -7,10 +7,6 @@ public class AnimatorsManager : MonoBehaviour
     [SerializeField]
     private Animator _busAnimator;
     [SerializeField]
-    private Animator _playerAnimator;
-    [SerializeField]
-    private Animator _platformAnimator;
-    [SerializeField]
     private Animator _cameraAnimator;
 
 
@@ -30,7 +26,6 @@ public class AnimatorsManager : MonoBehaviour
                 _busAnimator.SetTrigger("arrive");
                 break;
             case GameLoop.GamePhase.Entering:
-                _playerAnimator.SetTrigger("enter");
                 _busAnimator.SetBool("playerInside",true);
                 _cameraAnimator.SetBool("onBus",true);
                 break;

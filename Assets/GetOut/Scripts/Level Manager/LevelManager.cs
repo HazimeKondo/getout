@@ -10,6 +10,8 @@ public class LevelManager : MonoBehaviour
 
     public Level LevelData;
 
+    public int FakeLevel = -1;
+
     private static int CurrentLevel = 0;
 
     private void Awake()
@@ -18,6 +20,9 @@ public class LevelManager : MonoBehaviour
             Instance = this;
         else
             Destroy(this.gameObject);
+
+        if (CurrentLevel == 0 && FakeLevel != -1)
+            CurrentLevel = FakeLevel;
     }
 
     public void WinLevel()

@@ -16,6 +16,11 @@ public class UIManager : MonoBehaviour {
         GameLoop.onStageOver += ShowStageUICaller;
     }
 
+    private void Update()
+    {
+        if(Input.GetKey(KeyCode.Space) && (_winUI.gameObject.activeInHierarchy || _lossUI.gameObject.activeInHierarchy))
+            Retry();
+    }
 
     private void ShowStageUICaller(bool sucess) {
         StartCoroutine(ShowStageUI(sucess));
